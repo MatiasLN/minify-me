@@ -10,14 +10,11 @@ Author URI: http://wwww.designkompaniet.no/matiasln/
 License: GPL2
 */
 
+require_once 'admin_settings.php';
+require_once 'environment.php';
+
 class WP_HTML_Compression
 {
-
-    // Settings
-    protected $compress_css = true;
-    protected $compress_js = false;
-    protected $info_comment = true;
-    protected $remove_comments = true;
 
     // Variables
     protected $html;
@@ -36,6 +33,10 @@ class WP_HTML_Compression
 
     protected function minifyHTML($html)
     {
+
+        // Get settings
+        require 'settings.php';
+
         $pattern = '/<(?<script>script).*?<\/script\s*>|<(?<style>style).*?<\/style\s*>|<!(?<comment>--).*?-->|<(?<tag>[\/\w.:-]*)(?:".*?"|\'.*?\'|[^\'">]+)*>|(?<text>((<[^!\/\w.:-])?[^<]*)+)|/si';
         preg_match_all($pattern, $html, $matches, PREG_SET_ORDER);
         $overriding = false;
@@ -113,7 +114,7 @@ class WP_HTML_Compression
     }
 }
 
-if (WP_ENV === 'localhost') {
+if (WP_ENV === 'development') {
     function wp_html_compression_finish($html)
     {
         return new WP_HTML_Compression($html);
